@@ -271,7 +271,7 @@ def main(args):
         lr = scheduler.get_last_lr()[0] if args.lr_scheduler is not None else args.lr
         loggers.info(f"epoch: {epoch + 1}, lr: {lr}, Train loss: {average_loss:.4f}, metrics: {train_metrics}")
 
-        model_checkpoint_path = os.path.join(epoch_model_dir, f"epoch{epoch}_sam.pth")
+        model_checkpoint_path = os.path.join(epoch_model_dir, f"epoch{epoch + 1}_sam.pth")
         torch.save(model.state_dict(), model_checkpoint_path)
         print(f"Model saved at {model_checkpoint_path}")
 
