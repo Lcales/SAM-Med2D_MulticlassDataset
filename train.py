@@ -251,6 +251,9 @@ def main(args):
     best_loss = 1e10
     l = len(train_loader)
 
+    epoch_model_dir = os.path.join(args.work_dir, "epoch_models")
+    os.makedirs(epoch_model_dir, exist_ok=True)
+
     for epoch in range(0, args.epochs):
         model.train()
         train_metrics = {}
@@ -267,6 +270,10 @@ def main(args):
         average_loss = np.mean(train_losses)
         lr = scheduler.get_last_lr()[0] if args.lr_scheduler is not None else args.lr
         loggers.info(f"epoch: {epoch + 1}, lr: {lr}, Train loss: {average_loss:.4f}, metrics: {train_metrics}")
+
+        model_checkpoint_path = os.path.join(epoch_model_dir, f"epoch{epoch}_sam.pth")
+        torch.save(model.state_dict(), model_checkpoint_path)
+        print(f"Model saved at {model_checkpoint_path}")
 
         if average_loss < best_loss:
             best_loss = average_loss
