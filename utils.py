@@ -161,29 +161,26 @@ def init_point_sampling(mask, get_point=1):
 def train_transforms(img_size, ori_h, ori_w):
     transforms = []
     
-    # Padding o Resize in base alle dimensioni originali
+    # Condizione per la ridimensione dell'immagine
     if ori_h < img_size and ori_w < img_size:
         transforms.append(A.PadIfNeeded(min_height=img_size, min_width=img_size, border_mode=cv2.BORDER_CONSTANT, value=(0, 0, 0)))
     else:
         transforms.append(A.Resize(int(img_size), int(img_size), interpolation=cv2.INTER_NEAREST))
-    
-    # Aggiunta delle trasformazioni di augmentations
+
+    # Aggiunta delle operazioni di augmentazione
     transforms.extend([
-        A.ElasticTransform(alpha=30, sigma=5, alpha_affine=0, p=0.7),
-        A.HorizontalFlip(p=0.7),
-        A.RandomRotate90(p=0.7),
-        A.ShiftScaleRotate(shift_limit=0.1, scale_limit=0.2, rotate_limit=30, border_mode=cv2.BORDER_CONSTANT, value=0, p=0.7),
-        A.RandomResizedCrop(height=img_size, width=img_size, scale=(0.8, 1.0), ratio=(0.8, 1.2), p=0.7),
-        A.RandomGamma(gamma_limit=(70, 130), p=0.7),
-        A.RandomBrightnessContrast(brightness_limit=0.3, contrast_limit=0.3, p=0.7),
+        A.ElasticTransform(alpha=30, sigma=5, p=0.4),  # elastic deformation
+        A.HorizontalFlip(p=0.7),                       # flip orizzontale
+        A.Rotate(limit=20, p=0.7),                      # rotazione fino a 20 gradi
+        A.RandomTranslate(shift_limit=0.1, p=0.3),      # traslazione casuale
+        A.RandomCrop(height=int(img_size), width=int(img_size), p=0.5),  # crop casuale
+        A.RandomGamma(gamma_limit=(0.7, 1.3), p=0.7),   # modifiche gamma
+        A.RandomContrast(limit=(0.7, 1.3), p=0.7)       # contrasto casuale
     ])
-    
-    # Conversione in tensore
-    transforms.append(ToTensorV2(p=1.0))
+
+    transforms.append(A.ToTensorV2(p=1.0))  # Convert to tensor
     
     return A.Compose(transforms, p=1.0)
-
-
 
 def get_logger(filename, verbosity=1, name=None):
     level_dict = {0: logging.DEBUG, 1: logging.INFO, 2: logging.WARNING}
