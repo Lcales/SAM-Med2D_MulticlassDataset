@@ -172,7 +172,6 @@ def train_transforms(img_size, ori_h, ori_w):
         A.ElasticTransform(alpha=30, sigma=5, p=0.4),  # elastic deformation
         A.HorizontalFlip(p=0.7),                       # flip orizzontale
         A.Rotate(limit=20, p=0.7),                      # rotazione fino a 20 gradi
-        A.RandomTranslate(shift_limit=0.1, p=0.3),      # traslazione casuale
         A.RandomGamma(gamma_limit=(70, 130), p=0.7),   # modifiche gamma
         A.RandomBrightnessContrast(ensure_safe_range = True, p=0.7)       # contrasto casuale
     ])
