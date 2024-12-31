@@ -173,9 +173,8 @@ def train_transforms(img_size, ori_h, ori_w):
         A.HorizontalFlip(p=0.7),                       # flip orizzontale
         A.Rotate(limit=20, p=0.7),                      # rotazione fino a 20 gradi
         A.RandomTranslate(shift_limit=0.1, p=0.3),      # traslazione casuale
-        A.RandomCrop(height=int(img_size), width=int(img_size), p=0.5),  # crop casuale
-        A.RandomGamma(gamma_limit=(0.7, 1.3), p=0.7),   # modifiche gamma
-        A.RandomContrast(limit=(0.7, 1.3), p=0.7)       # contrasto casuale
+        A.RandomGamma(gamma_limit=(70, 130), p=0.7),   # modifiche gamma
+        A.RandomBrightnessContrast(ensure_safe_range = True, p=0.7)       # contrasto casuale
     ])
 
     transforms.append(A.ToTensorV2(p=1.0))  # Convert to tensor
