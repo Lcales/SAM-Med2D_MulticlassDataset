@@ -157,7 +157,15 @@ def init_point_sampling(mask, get_point=1):
         coords, labels = torch.as_tensor(coords[indices], dtype=torch.float), torch.as_tensor(labels[indices], dtype=torch.int)
         return coords, labels
     
-
+def test_transforms(img_size, ori_h, ori_w):
+    transforms = []
+    if ori_h < img_size and ori_w < img_size:
+        transforms.append(A.PadIfNeeded(min_height=img_size, min_width=img_size, border_mode=cv2.BORDER_CONSTANT, value=(0, 0, 0)))
+    else:
+        transforms.append(A.Resize(int(img_size), int(img_size), interpolation=cv2.INTER_NEAREST))
+    transforms.append(ToTensorV2(p=1.0))
+    return A.Compose(transforms, p=1.)
+    
 def train_transforms(img_size, ori_h, ori_w):
     transforms = []
     
@@ -172,7 +180,6 @@ def train_transforms(img_size, ori_h, ori_w):
         A.ElasticTransform(alpha=30, sigma=5, p=0.4),  # elastic deformation
         A.HorizontalFlip(p=0.7),                       # flip orizzontale
         A.Rotate(limit=20, p=0.7),                      # rotazione fino a 20 gradi
-        A.RandomGamma(gamma_limit=(70, 130), p=0.7),   # modifiche gamma
         A.RandomBrightnessContrast(p=0.7)       # contrasto casuale
     ])
 
