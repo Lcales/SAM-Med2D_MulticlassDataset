@@ -70,7 +70,7 @@ class TestingDataset(Dataset):
         h, w = ori_np_mask.shape
         ori_mask = torch.tensor(ori_np_mask).unsqueeze(0)
 
-        transforms = train_transforms(self.image_size, h, w)
+        transforms = test_transforms(self.image_size, h, w)
         augments = transforms(image=image, mask=ori_np_mask)
         image, mask = augments['image'], augments['mask'].to(torch.int64)
 
