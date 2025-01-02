@@ -9,7 +9,7 @@ import numpy as np
 from torch.nn import functional as F
 from torch.utils.data import DataLoader
 from tqdm import tqdm
-from utils import train_transforms, get_boxes_from_mask, init_point_sampling
+from utils import test_transforms, train_transforms, get_boxes_from_mask, init_point_sampling
 import json
 import random
 
