@@ -78,13 +78,15 @@ def evaluate_model(args, model, test_loader, logger=None):
     test_loss = []
     test_iter_metrics = [0] * len(args.metrics)
     l = len(test_loader)
+    prompt_dict = {}  # inizializza il dizionario per il prompt se necessario
 
-    for i, batched_input in enumerate(val_loader):
+    for i, batched_input in enumerate(test_loader):
         batched_input = to_device(batched_input, args.device)
         ori_labels = batched_input["ori_label"]
         original_size = batched_input["original_size"]
         labels = batched_input["label"]
         img_name = batched_input['name'][0]
+
         if args.prompt_path is None:
             prompt_dict[img_name] = {
                 "boxes": batched_input["boxes"].squeeze(1).cpu().numpy().tolist(),
@@ -92,12 +94,8 @@ def evaluate_model(args, model, test_loader, logger=None):
                 "point_labels": batched_input["point_labels"].squeeze(1).cpu().numpy().tolist()
             }
 
-    # Continua con il resto del ciclo di validazione
-    low_res_masks = model(batched_input)
-    masks, pad = postprocess_masks(low_res_masks, args.image_size, original_size)
-
-
-        with torch.no_grad():
+        # Blocco di elaborazione del modello (dentro il ciclo)
+        with torch.no_grad():  # questa riga è ora correttamente indentata
             image_embeddings = model.image_encoder(batched_input["image"])
             sparse_embeddings, dense_embeddings = model.prompt_encoder(
                 points=(batched_input["point_coords"], batched_input["point_labels"]),
@@ -115,6 +113,7 @@ def evaluate_model(args, model, test_loader, logger=None):
         masks, pad = postprocess_masks(low_res_masks, args.image_size, original_size)
         if args.save_pred:
             save_masks(masks, save_path, img_name, args.image_size, original_size, pad, batched_input.get("boxes", None), points_show)
+
         loss = criterion(masks, ori_labels, iou_predictions)
         test_loss.append(loss.item())
 
@@ -131,6 +130,7 @@ def evaluate_model(args, model, test_loader, logger=None):
     print(f"Validation Loss: {avg_loss:.4f}, Metrics: {test_metrics}")
 
     return avg_loss, test_metrics
+
 
 def main(args):
     print('*' * 80)
