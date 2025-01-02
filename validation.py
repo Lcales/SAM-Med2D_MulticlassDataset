@@ -26,10 +26,11 @@ def parse_args():
     parser.add_argument("--point_num", type=int, default=1, help="point num")
     parser.add_argument("--iter_point", type=int, default=1, help="iter num") 
     parser.add_argument("--multimask", type=bool, default=True, help="ouput multimask")
-    parser.add_argument("--encoder_adapter", type=bool, default=True, help="use adapter")  # Linea aggiunta
+    parser.add_argument("--encoder_adapter", type=bool, default=True, help="use adapter")
     parser.add_argument("--prompt_path", type=str, default=None, help="fix prompt path")
     parser.add_argument("--save_pred", type=bool, default=False, help="save result")
     parser.add_argument("--log_file", type=str, default="workdir/validation.log", help="log file path")
+    parser.add_argument("--epoch_model_dir", type=str, default="workdir/epoch_models", help="path to save epoch models")  # Linea aggiunta
     args = parser.parse_args()
     if args.iter_point > 1:
         args.point_num = 1
