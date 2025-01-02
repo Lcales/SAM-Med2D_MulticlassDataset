@@ -19,6 +19,7 @@ def parse_args():
     parser.add_argument("--image_size", type=int, default=256, help="Image size for input")
     parser.add_argument('--device', type=str, default='cuda', help="Device to run on")
     parser.add_argument("--data_path", type=str, required=True, help="Path to the validation dataset")
+    parser.add_argument("--sam_checkpoint", type=str, default="pretrain_model/sam-med2d_b.pth", help="sam checkpoint")
     parser.add_argument("--metrics", nargs='+', default=['iou', 'dice'], help="Metrics for evaluation")
     parser.add_argument("--model_type", type=str, default="vit_b", help="Model architecture")
     parser.add_argument("--epoch_model_dir", type=str, required=True, help="Directory containing epoch models")
