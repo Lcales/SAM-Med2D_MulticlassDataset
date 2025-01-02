@@ -180,7 +180,6 @@ def train_transforms(img_size, ori_h, ori_w):
         A.ElasticTransform(alpha=30, sigma=5, p=0.4),  # elastic deformation
         A.HorizontalFlip(p=0.7),                       # flip orizzontale
         A.Rotate(limit=20, p=0.7),                      # rotazione fino a 20 gradi
-        A.RandomBrightnessContrast(p=0.7)       # contrasto casuale
     ])
 
     transforms.append(ToTensorV2(p=1.0))  # Convert to tensor
