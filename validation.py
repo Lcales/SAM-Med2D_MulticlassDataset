@@ -13,19 +13,26 @@ import torch.nn.functional as F
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--work_dir", type=str, default="workdir", help="Work directory")
-    parser.add_argument("--run_name", type=str, default="validation", help="Run name for the model")
-    parser.add_argument("--batch_size", type=int, default=8, help="Batch size for validation")
-    parser.add_argument("--image_size", type=int, default=256, help="Image size for input")
-    parser.add_argument('--device', type=str, default='cuda', help="Device to run on")
-    parser.add_argument("--data_path", type=str, required=True, help="Path to the validation dataset")
-    parser.add_argument("--sam_checkpoint", type=str, default="pretrain_model/sam-med2d_b.pth", help="sam checkpoint")
-    parser.add_argument("--metrics", nargs='+', default=['iou', 'dice'], help="Metrics for evaluation")
-    parser.add_argument("--model_type", type=str, default="vit_b", help="Model architecture")
-    parser.add_argument("--epoch_model_dir", type=str, required=True, help="Directory containing epoch models")
-    parser.add_argument("--log_file", type=str, default=None, help="Path to save validation logs")
-    parser.add_argument("--save_pred", type=bool, default=False, help="Whether to save prediction masks")
+    parser.add_argument("--work_dir", type=str, default="workdir", help="work dir")
+    parser.add_argument("--run_name", type=str, default="validation_run", help="run model name")
+    parser.add_argument("--batch_size", type=int, default=8, help="batch size")
+    parser.add_argument("--image_size", type=int, default=256, help="image_size")
+    parser.add_argument('--device', type=str, default='cuda')
+    parser.add_argument("--data_path", type=str, default="./liver_dataset/val", help="train data path") 
+    parser.add_argument("--metrics", nargs='+', default=['iou', 'dice'], help="metrics")
+    parser.add_argument("--model_type", type=str, default="vit_b", help="sam model_type")
+    parser.add_argument("--sam_checkpoint", type=str, default="pretrain_model/sam-med2d_b.pth", help="sam checkpoint")  
+    parser.add_argument("--boxes_prompt", type=bool, default=True, help="use boxes prompt")
+    parser.add_argument("--point_num", type=int, default=1, help="point num")
+    parser.add_argument("--iter_point", type=int, default=1, help="iter num") 
+    parser.add_argument("--multimask", type=bool, default=True, help="ouput multimask")
+    parser.add_argument("--encoder_adapter", type=bool, default=True, help="use adapter")  # Linea aggiunta
+    parser.add_argument("--prompt_path", type=str, default=None, help="fix prompt path")
+    parser.add_argument("--save_pred", type=bool, default=False, help="save result")
+    parser.add_argument("--log_file", type=str, default="workdir/validation.log", help="log file path")
     args = parser.parse_args()
+    if args.iter_point > 1:
+        args.point_num = 1
     return args
 
 def to_device(batch_input, device):
