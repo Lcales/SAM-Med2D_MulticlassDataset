@@ -79,10 +79,23 @@ def evaluate_model(args, model, test_loader, logger=None):
     test_iter_metrics = [0] * len(args.metrics)
     l = len(test_loader)
 
-    for batched_input in test_pbar:
+    for i, batched_input in enumerate(val_loader):
         batched_input = to_device(batched_input, args.device)
         ori_labels = batched_input["ori_label"]
+        original_size = batched_input["original_size"]
         labels = batched_input["label"]
+        img_name = batched_input['name'][0]
+        if args.prompt_path is None:
+            prompt_dict[img_name] = {
+                "boxes": batched_input["boxes"].squeeze(1).cpu().numpy().tolist(),
+                "point_coords": batched_input["point_coords"].squeeze(1).cpu().numpy().tolist(),
+                "point_labels": batched_input["point_labels"].squeeze(1).cpu().numpy().tolist()
+            }
+
+    # Continua con il resto del ciclo di validazione
+    low_res_masks = model(batched_input)
+    masks, pad = postprocess_masks(low_res_masks, args.image_size, original_size)
+
 
         with torch.no_grad():
             image_embeddings = model.image_encoder(batched_input["image"])
