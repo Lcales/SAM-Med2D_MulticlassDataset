@@ -246,7 +246,7 @@ def main(args):
     train_loader = DataLoader(train_dataset, batch_size = args.batch_size, shuffle=True, num_workers=4)
     print('*******Train data:', len(train_dataset))   
 
-    loggers = get_logger(os.path.join(args.work_dir, "logs", f"{args.run_name}_{datetime.datetime.now().strftime('%Y%m%d-%H%M.log')}"))
+    loggers = get_logger(os.path.join(args.work_dir, "logs", "train.log"))
 
     best_loss = 1e10
     l = len(train_loader)
