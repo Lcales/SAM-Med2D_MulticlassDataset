@@ -51,8 +51,10 @@ def main():
         epoch = epoch + 1
 
         # Carichiamo il modello
+        # Imposta esplicitamente il percorso del checkpoint
+        args.sam_checkpoint = checkpoint_path  # Aggiorna il valore per il ciclo corrente
         model = sam_model_registry[args.model_type](args).to(args.device)
-        model.load_state_dict(torch.load(checkpoint_path, map_location=args.device))
+        # model.load_state_dict(torch.load(checkpoint_path, map_location=args.device))
         model.eval()
 
         # Inizializziamo le metriche
@@ -163,7 +165,7 @@ def main():
         }
 
         average_loss = np.mean(test_loss)
-        logger.info(f"epoch: {epoch + 1}, lr: {args.lr if 'lr' in vars(args) else 'N/A'}, "
+        logger.info(f"epoch: {epoch + 1},"
                     f"Validation loss: {average_loss:.4f}, metrics: {test_metrics}")
     
 
