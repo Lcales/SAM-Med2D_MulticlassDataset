@@ -23,20 +23,12 @@ def main():
     args = parse_args()  # Usa lo stesso parser di test.py
     logger = get_logger(os.path.join(args.work_dir, "validation.log"))
 
-    # Stampa i parametri
-    logger.info("*" * 100)
-    for key, value in vars(args).items():
-        logger.info(f"{key}: {value}")
-    logger.info("*" * 100)
-
     # Otteniamo i checkpoint
     checkpoint_dir = args.epoch_model_dir
     checkpoint_files = sorted(
         [f for f in os.listdir(checkpoint_dir) if f.endswith("_sam.pth")],
         key=lambda x: int(x.split("epoch")[1].split("_")[0])
     )
-
-    logger.info(f"Found {len(checkpoint_files)} models in {checkpoint_dir}")
 
     # Costruiamo il DataLoader per il validation set
     test_dataset = TestingDataset(
@@ -51,11 +43,9 @@ def main():
     test_loader = DataLoader(
         dataset=test_dataset, batch_size=1, shuffle=False, num_workers=4
     )
-    logger.info(f"Validation data: {len(test_loader)}")
 
     for checkpoint_file in checkpoint_files:
         checkpoint_path = os.path.join(checkpoint_dir, checkpoint_file)
-        logger.info(f"Evaluating model: {checkpoint_file}")
 
         # Carichiamo il modello
         model = sam_model_registry[args.model_type](args).to(args.device)
@@ -170,9 +160,9 @@ def main():
         }
 
         average_loss = np.mean(test_loss)
-        logger.info(
-            f"Validation loss: {average_loss:.4f}, metrics: {test_metrics}"
-        )
+        logger.info(f"epoch: {epoch + 1}, lr: {args.lr if 'lr' in vars(args) else 'N/A'}, "
+                    f"Validation loss: {average_loss:.4f}, metrics: {test_metrics}")
+    
 
         if args.prompt_path is None:
             with open(
@@ -180,7 +170,6 @@ def main():
             ) as f:
                 json.dump(prompt_dict, f, indent=2)
 
-    logger.info("Validation process completed!")
 
 
 if __name__ == "__main__":
