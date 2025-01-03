@@ -44,7 +44,7 @@ def main():
         dataset=test_dataset, batch_size=1, shuffle=False, num_workers=4
     )
 
-    epoch = 0
+    epoch = -1
 
     for checkpoint_file in checkpoint_files:
         checkpoint_path = os.path.join(checkpoint_dir, checkpoint_file)
