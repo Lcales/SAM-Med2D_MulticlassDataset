@@ -226,14 +226,12 @@ def main(args):
     criterion = FocalDiceloss_IoULoss()
 
     if args.lr_scheduler:
-        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+        scheduler = torch.optim.lr_scheduler.MultiStepLR(
             optimizer, 
-            mode='min', 
-            factor=0.5,      # Riduzione del learning rate del 50%
-            patience=3,      # Numero di epoche senza miglioramenti
-            threshold=0.01,  # Soglia di miglioramento minimo
-            verbose=True     # Loggare le riduzioni del LR
+            milestones=[3, 6, 9],  # Riduzione progressiva ogni 3 epoche
+            gamma=0.5
         )
+
 
     if args.resume is not None:
         with open(args.resume, "rb") as f:
