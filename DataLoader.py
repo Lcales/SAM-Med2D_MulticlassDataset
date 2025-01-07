@@ -150,7 +150,7 @@ class TrainingDataset(Dataset):
         masks_list = []
         boxes_list = []
         point_coords_list, point_labels_list = [], []
-        mask_path = random.choices(self.label_paths[index], k=self.mask_num)
+        mask_paths = self.label_paths[index]
         for m in mask_path:
             pre_mask = cv2.imread(m, 0)
             if pre_mask.max() == 255:
