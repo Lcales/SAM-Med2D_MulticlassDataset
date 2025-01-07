@@ -151,6 +151,7 @@ class TrainingDataset(Dataset):
         boxes_list = []
         point_coords_list, point_labels_list = [], []
         mask_paths = self.label_paths[index]
+        print(mask_paths)
         for m in mask_path:
             pre_mask = cv2.imread(m, 0)
             if pre_mask.max() == 255:
