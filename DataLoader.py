@@ -151,7 +151,7 @@ class TrainingDataset(Dataset):
         boxes_list = []
         point_coords_list, point_labels_list = [], []
         mask_paths = self.label_paths[index]
-        print(mask_paths)
+        mask_names = [m.split('/')[-1] for m in mask_paths]  # Estrai i nomi delle maschere
         for m in mask_path:
             pre_mask = cv2.imread(m, 0)
             if pre_mask.max() == 255:
@@ -178,6 +178,7 @@ class TrainingDataset(Dataset):
         image_input["boxes"] = boxes
         image_input["point_coords"] = point_coords
         image_input["point_labels"] = point_labels
+        image_input["mask_names"] = mask_names
 
         image_name = self.image_paths[index].split('/')[-1]
         if self.requires_name:
