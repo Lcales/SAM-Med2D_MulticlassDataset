@@ -150,7 +150,7 @@ class TrainingDataset(Dataset):
         masks_list = []
         boxes_list = []
         point_coords_list, point_labels_list = [], []
-        mask_path = self.label_paths[index]
+        mask_path = random.choices(self.label_paths[index], k=self.mask_num)
         mask_names = [m.split('/')[-1] for m in mask_paths]  # Estrai i nomi delle maschere
         for m in mask_path:
             pre_mask = cv2.imread(m, 0)
