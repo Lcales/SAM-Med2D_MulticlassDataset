@@ -150,8 +150,7 @@ class TrainingDataset(Dataset):
         masks_list = []
         boxes_list = []
         point_coords_list, point_labels_list = [], []
-        mask_path = self.label_paths[index]
-        mask_names = [m.split('/')[-1] for m in mask_path]  # Estrai i nomi delle maschere
+        mask_path = random.choices(self.label_paths[index], k=self.mask_num)
         for m in mask_path:
             pre_mask = cv2.imread(m, 0)
             if pre_mask.max() == 255:
@@ -178,7 +177,6 @@ class TrainingDataset(Dataset):
         image_input["boxes"] = boxes
         image_input["point_coords"] = point_coords
         image_input["point_labels"] = point_labels
-        image_input["mask_names"] = mask_names
 
         image_name = self.image_paths[index].split('/')[-1]
         if self.requires_name:
@@ -207,4 +205,3 @@ if __name__ == "__main__":
     for i, batched_image in enumerate(tqdm(train_batch_sampler)):
         batched_image = stack_dict_batched(batched_image)
         print(batched_image["image"].shape, batched_image["label"].shape)
-
